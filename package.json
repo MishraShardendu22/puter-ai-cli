@@ -1,0 +1,41 @@
+{
+  "name": "puter-ai-cli",
+  "version": "1.0.0",
+  "description": "A production-grade CLI AI provider powered by Puter.js without requiring an OpenAI API key",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "mycli": "./dist/index.js",
+    "puter-ai-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "start": "tsx src/index.ts",
+    "test": "node --test --import tsx tests/**/*.test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MishraShardendu22/puter-ai-cli.git"
+  },
+  "keywords": [
+    "puter",
+    "ai",
+    "cli",
+    "llm",
+    "gpt",
+    "free-ai",
+    "streaming"
+  ],
+  "author": "Shardendu Mishra",
+  "license": "MIT",
+  "dependencies": {
+    "@heyputer/puter.js": "^2.6.3",
+    "commander": "^15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

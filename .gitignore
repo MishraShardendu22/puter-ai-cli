@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Compiled distribution
+dist/
+
+# Test coverage & logs
+coverage/
+*.log
+npm-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.tmp
+*.tmp.*
+auth.json
+
+# OS files
+.DS_Store
+Thumbs.db
