@@ -10,6 +10,7 @@ export interface PuterChatOptions {
   stream?: boolean;
   temperature?: number;
   maxTokens?: number;
+  webSearch?: boolean;
 }
 
 export class PuterError extends Error {
@@ -197,6 +198,9 @@ export class PuterProvider {
     }
     if (typeof options.maxTokens === 'number') {
       requestOptions.max_tokens = options.maxTokens;
+    }
+    if (options.webSearch) {
+      requestOptions.tools = [{ type: 'web_search' }];
     }
 
     let response: unknown;

@@ -132,4 +132,27 @@ describe('Puter Provider Module', () => {
     const fullResponse = await provider.chat('Explain epoll.', { stream: false });
     assert.strictEqual(fullResponse, 'Epoll is scalable I/O multiplexing.');
   });
+
+  test('chatStream passes tools: [{ type: "web_search" }] when webSearch is true', async () => {
+    const provider = new PuterProvider({ authToken: 'dummy_token' });
+    let passedOptions: any = null;
+
+    (provider as any).puter = {
+      ai: {
+        chat: async (_prompt: string, opts: any) => {
+          passedOptions = opts;
+          return {
+            message: {
+              content: 'Web search completed.',
+            },
+          };
+        },
+      },
+    };
+
+    const res = await provider.chat('Search query', { webSearch: true });
+    assert.strictEqual(res, 'Web search completed.');
+    assert.ok(passedOptions);
+    assert.deepStrictEqual(passedOptions.tools, [{ type: 'web_search' }]);
+  });
 });

@@ -71,6 +71,7 @@ describe('CLI Integration Tests', () => {
     assert.ok(res.stdout.includes('--model'));
     assert.ok(res.stdout.includes('--stream'));
     assert.ok(res.stdout.includes('--no-stream'));
+    assert.ok(res.stdout.includes('--web-search'));
   });
 
   test('mycli auth status shows not authenticated by default', async () => {

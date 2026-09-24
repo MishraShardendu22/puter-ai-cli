@@ -7,6 +7,7 @@ export interface AskCommandOptions {
   stream?: boolean;
   temperature?: string;
   customAuthPath?: string;
+  webSearch?: boolean;
 }
 
 /**
@@ -100,6 +101,7 @@ export async function executeAsk(
           model: options.model,
           stream,
           temperature,
+          webSearch: options.webSearch,
         })) {
           receivedAnyChunk = true;
           process.stdout.write(chunk);
@@ -150,8 +152,13 @@ export function registerAskCommand(program: Command): void {
     .option('--stream', 'Stream responses token by token (default)', true)
     .option('--no-stream', 'Disable streaming and wait for complete response')
     .option('-t, --temperature <temperature>', 'Sampling temperature between 0 and 2')
+    .option('-w, --web-search', 'Enable real-time web search for up-to-date information (default: false)', false)
+    .option('--search', 'Alias for --web-search')
     .option('--auth-file <path>', 'Custom path for token storage')
-    .action(async (promptArgs: string[], options: AskCommandOptions) => {
+    .action(async (promptArgs: string[], options: AskCommandOptions & { search?: boolean }) => {
+      if (options.search) {
+        options.webSearch = true;
+      }
       await executeAsk(promptArgs, options);
     });
 }

@@ -162,6 +162,7 @@ mycli ask "Explain epoll."
 |---|---|
 | `mycli ask <prompt>` | Query Puter AI and stream the answer to stdout |
 | `-m, --model <name>` | Specify model (e.g. `gpt-5-nano`, `gpt-4o`, `gpt-5.4`, `claude-3-5-sonnet`) |
+| `-w, --web-search` | Enable real-time web search for live queries & citations (`--search`) |
 | `--stream` | Stream tokens in real time (default: `true`) |
 | `--no-stream` | Wait and output the complete response at once |
 | `-t, --temperature <num>` | Sampling temperature between `0` and `2` |
