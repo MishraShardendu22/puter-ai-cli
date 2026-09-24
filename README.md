@@ -1,4 +1,4 @@
-# ⚡ puter-ai-cli
+# puter-ai-cli
 
 <div align="center">
 
@@ -18,7 +18,7 @@
 
 ---
 
-## 💡 Why `puter-ai-cli`?
+## Why `puter-ai-cli`?
 
 Most AI command-line tools require an expensive OpenAI or Anthropic API key with upfront billing. **`puter-ai-cli`** integrates with **Puter.js** to provide free, serverless AI queries directly from your terminal.
 
@@ -31,7 +31,7 @@ Most AI command-line tools require an expensive OpenAI or Anthropic API key with
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 ### 1. Installation
 
@@ -57,7 +57,7 @@ Once logged in, credentials are saved securely to `~/.config/mycli/auth.json` (m
 
 ---
 
-## 📖 CLI Usage & Examples
+## CLI Usage & Examples
 
 ### Ask Queries Directly
 
@@ -114,7 +114,7 @@ mycli ask "Suggest 3 unique names for a vector database." -t 0.9
 
 ---
 
-## 🔄 Token Pool & Round-Robin Rotation
+## Token Pool & Round-Robin Rotation
 
 Puter provides 1,000 free monthly credits per account. With `puter-ai-cli`, you can pool multiple accounts to multiply your free quota and enable automatic failover:
 
@@ -140,7 +140,7 @@ mycli auth remove 2
 
 ---
 
-## ⚙️ CI & Headless Environments
+## CI & Headless Environments
 
 In Docker containers, GitHub Actions, or SSH sessions without a GUI browser, set the `PUTER_AUTH_TOKEN` environment variable:
 
@@ -156,7 +156,7 @@ mycli ask "Explain epoll."
 
 ---
 
-## 🛠️ CLI Reference
+## CLI Reference
 
 | Command / Option | Description |
 |---|---|
@@ -175,7 +175,7 @@ mycli ask "Explain epoll."
 
 ---
 
-## 🏛️ Architecture
+## Architecture
 
 ```mermaid
 graph TD
@@ -196,7 +196,7 @@ graph TD
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The project includes an automated test suite with 31 unit and integration tests:
 
@@ -216,12 +216,12 @@ Coverage spans:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are warmly welcomed! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
