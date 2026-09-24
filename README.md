@@ -1,263 +1,226 @@
-# Puter.js CLI AI Provider (`mycli`)
+# ⚡ puter-ai-cli
 
-A production-grade command-line AI assistant powered by Puter.js. This CLI allows you to execute AI prompts directly from your terminal using Puter's serverless AI infrastructure—**without requiring an OpenAI API key**.
+<div align="center">
 
----
+### Free CLI AI Assistant Powered by Puter.js
 
-## Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x%20%7C%207.x-blue.svg)](https://www.typescriptlang.org/)
+[![CI](https://github.com/MishraShardendu22/puter-ai-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/MishraShardendu22/puter-ai-cli/actions)
+[![GitHub Stars](https://img.shields.io/github/stars/MishraShardendu22/puter-ai-cli?style=social)](https://github.com/MishraShardendu22/puter-ai-cli)
 
-- **No OpenAI API Key Required**: Leverages Puter's hosted AI models directly via `@heyputer/puter.js`.
-- **Seamless Browser Authentication**: On first run, prompts for Puter login via `getAuthToken()` in your default browser.
-- **Secure Token Persistence**: Caches credentials securely in `~/.config/mycli/auth.json` with restricted `0600` permissions so subsequent runs require no login.
-- **Headless & CI Support**: Overrides authentication seamlessly via the `PUTER_AUTH_TOKEN` environment variable for automated pipelines and remote servers.
-- **Streaming by Default**: Streams responses token-by-token in real time to standard output.
-- **Piped Stdin Support**: Accept prompts directly from standard input (e.g. `cat file.txt | mycli ask`).
-- **Production-Grade Error Handling**: Clean error output to `stderr` with actionable messages and strict non-zero exit codes.
+<p align="center">
+  <b>Stream GPT-4o, GPT-5.4, Claude 3.5 & more directly in your terminal without requiring an OpenAI API key or paid subscription.</b>
+</p>
 
----
-
-## Project Structure
-
-```
-├── src/
-│   ├── index.ts           # CLI entrypoint with Commander & warning suppression
-│   ├── auth.ts            # Token resolution, browser auth & persistence
-│   ├── commands/
-│   │   └── ask.ts         # 'ask' CLI command with streaming & stdin support
-│   └── providers/
-│       └── puter.ts       # Puter AI provider implementation & error mapping
-├── tests/
-│   ├── auth.test.ts       # Unit tests for token persistence & precedence
-│   ├── puter.test.ts      # Unit tests for Puter provider & streaming parser
-│   └── cli.test.ts        # Integration tests for CLI commands & exit codes
-├── dist/                  # Compiled JavaScript distribution
-├── package.json
-└── tsconfig.json
-```
+</div>
 
 ---
 
-## Prerequisites
+## 💡 Why `puter-ai-cli`?
 
-- **Node.js**: v24.0.0 or later (v24.19.0 recommended)
-- **npm**: v10.0.0 or later
+Most AI command-line tools require an expensive OpenAI or Anthropic API key with upfront billing. **`puter-ai-cli`** integrates with **Puter.js** to provide free, serverless AI queries directly from your terminal.
 
----
-
-## Installation & Setup
-
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Build the TypeScript source**:
-   ```bash
-   npm run build
-   ```
-
-3. **Link globally (optional, to use `mycli` anywhere)**:
-   ```bash
-   npm link
-   ```
-
-After linking, the `mycli` executable is available globally in your PATH.
+- **Zero OpenAI API Key Required**: Powered entirely by Puter's hosted AI infrastructure.
+- **Real-Time Token Streaming**: Watch responses stream into `stdout` token-by-token.
+- **One-Click Browser Auth**: Automatically opens your browser on first run and persists your session securely.
+- **Multi-Token Pooling & Auto-Failover**: Configure multiple Puter accounts; the CLI automatically rotates between them (Round-Robin) and fails over seamlessly if one hits a rate limit!
+- **Unix Pipeline Native**: Pipe files, git diffs, and logs directly into prompts (`cat file.c | mycli ask`).
+- **Production-Grade**: Written in TypeScript with strict typing, comprehensive error normalization, and non-zero exit codes.
 
 ---
 
-## Authentication Flow
+## 🚀 Quickstart
 
-The CLI follows a deterministic 3-tier authentication precedence:
+### 1. Installation
 
-```mermaid
-graph TD
-    A[Start CLI Execution] --> B{PUTER_AUTH_TOKEN set?}
-    B -- Yes --> C[Use PUTER_AUTH_TOKEN]
-    B -- No --> D{Cached token in auth.json?}
-    D -- Yes --> E[Load cached token]
-    D -- No --> F[Open browser for Puter login via getAuthToken]
-    F --> G[Receive token via callback]
-    G --> H[Save token to ~/.config/mycli/auth.json]
-    C --> I[Initialize Puter SDK]
-    E --> I
-    H --> I
-    I --> J[Execute AI Chat Request]
-```
-
-### 1. First Run (Interactive Browser Login)
-When running `mycli ask` for the first time without a cached token or environment variable:
-1. The CLI calls `getAuthToken()` from `@heyputer/puter.js`.
-2. A temporary local HTTP callback server is started and your default browser opens the Puter login page (`https://puter.com/?action=authme`).
-3. If running over SSH or if the browser fails to open, a manual login URL is printed to `stderr`.
-4. Upon authentication, Puter redirects back to the local listener.
-5. The token is securely stored at `~/.config/mycli/auth.json` (mode `0600`).
-6. The CLI proceeds with answering your prompt.
-
-### 2. Subsequent Runs (Automatic Reuse)
-Future invocations automatically detect and load the cached token from disk, with zero authentication prompts.
-
-### 3. CI / Headless Environments (`PUTER_AUTH_TOKEN`)
-In headless environments, GitHub Actions, Docker containers, or remote servers without a GUI display, set the `PUTER_AUTH_TOKEN` environment variable:
+Clone and install dependencies:
 
 ```bash
-export PUTER_AUTH_TOKEN="your_puter_auth_token_here"
+git clone https://github.com/MishraShardendu22/puter-ai-cli.git
+cd puter-ai-cli
+npm install
+npm run build
+npm link
+```
+
+### 2. First Run (Automatic Login)
+
+Ask any prompt. On first run, it will automatically launch your browser to log in to Puter:
+
+```bash
+mycli ask "Explain epoll in simple terms."
+```
+
+Once logged in, credentials are saved securely to `~/.config/mycli/auth.json` (mode `0600`). Subsequent runs execute immediately with zero prompts!
+
+---
+
+## 📖 CLI Usage & Examples
+
+### Ask Queries Directly
+
+```bash
+# Standard question
 mycli ask "Explain epoll."
+
+# Quotation marks are optional for multi-word queries
+mycli ask What is the difference between TCP and UDP?
 ```
 
-When `PUTER_AUTH_TOKEN` is present, it bypasses browser authentication and disk cache checks entirely.
+### Route to Different AI Models
 
----
-
-## CLI Usage
-
-### Basic Usage
-
-Ask any question to Puter AI:
+Pass `-m` or `--model` to route prompts to top-tier models:
 
 ```bash
-mycli ask "Explain epoll."
+# GPT-4o
+mycli ask "Explain the actor model." -m gpt-4o
+
+# GPT-5.4 (Most powerful reasoning)
+mycli ask "Design an LSM-tree storage engine." -m gpt-5.4
+
+# GPT-5.3 Codex (Specialized for code)
+mycli ask "Write an epoll-based reactor loop in C." -m gpt-5.3-codex
+
+# Claude 3.5 Sonnet
+mycli ask "Analyze this architecture for bottlenecks." -m claude-3-5-sonnet
 ```
 
-Arguments with multiple words can be passed with or without quotation marks:
+### Pipe Stdin Input
+
+Pipe logs, source files, or git diffs straight into `mycli ask`:
 
 ```bash
-mycli ask Explain the difference between select, poll, and epoll.
-```
+# Code review
+cat main.c | mycli ask "Review this C code for memory leaks and buffer overflows."
 
-### Piping Input from Stdin
-
-Pipe files, git diffs, or commands into `mycli ask`:
-
-```bash
-cat main.c | mycli ask "Review this code for buffer overflows and memory leaks."
-```
-
-```bash
+# Automated Git commit message generation
 git diff | mycli ask "Generate a conventional commit message for these changes."
+
+# Log file analysis
+tail -n 100 /var/log/syslog | mycli ask "Identify any recurring errors in this log."
 ```
 
-### Specifying AI Models
-
-Use `-m` or `--model` to route queries to a specific model supported by Puter:
+### Control Output & Temperature
 
 ```bash
-mycli ask "Write a quicksort implementation in Rust." --model gpt-5-nano
-```
+# Disable streaming and print full response at once
+mycli ask "List 5 SOLID design principles." --no-stream
 
-```bash
-mycli ask "Refactor this function." --model claude-3-5-sonnet
-```
-
-### Streaming Control
-
-Streaming is enabled by default. To disable streaming and wait for the complete response:
-
-```bash
-mycli ask "List 5 design patterns." --no-stream
-```
-
-### Sampling Temperature
-
-Tune model randomness using `-t` or `--temperature` (between `0` and `2`):
-
-```bash
-mycli ask "Suggest 3 creative names for an open source database." -t 0.9
+# Adjust temperature for creative brainstorming (0.0 to 2.0)
+mycli ask "Suggest 3 unique names for a vector database." -t 0.9
 ```
 
 ---
 
-## Token Pool, Round-Robin Rotation & Auto-Failover
+## 🔄 Token Pool & Round-Robin Rotation
 
-You can configure multiple Puter accounts/tokens. The CLI will:
-1. **Rotate automatically** (Round-Robin) between tokens on each prompt to balance usage evenly.
-2. **Auto-Failover**: If a token hits a 429 (quota or rate-limit) error, `mycli` will automatically fail over to the next available token in your pool without failing your query!
-3. **Multiply your free allowance**: 3 tokens = 3,000 free monthly credits; 5 tokens = 5,000 free monthly credits.
+Puter provides 1,000 free monthly credits per account. With `puter-ai-cli`, you can pool multiple accounts to multiply your free quota and enable automatic failover:
 
-### Add Tokens to the Pool
 ```bash
-mycli auth add "your_second_puter_token"
-```
+# Check current authentication and pool status
+mycli auth status
 
-### View Configured Tokens & Active Rotation Position
-```bash
+# Add additional tokens to the pool
+mycli auth add "your_second_token_here"
+
+# List configured tokens in the rotation pool
 mycli auth list
-```
-Output:
-```text
---- Configured Puter Tokens (2 total) ---
-  1. eyJh...IXy4 (active next)
-  2. eyJh...K3z9
-```
 
-### Remove a Token from the Pool
-```bash
-# Remove by number (e.g., token 2)
+# Remove a token by index number
 mycli auth remove 2
 ```
 
-### Environment Variable Rotation
-You can also supply multiple tokens via `PUTER_AUTH_TOKEN` separated by commas:
+### How Rotation Works
+
+1. **Round-Robin**: Each consecutive query automatically advances to the next token in the pool, distributing usage evenly across accounts.
+2. **Auto-Failover**: If a token runs out of monthly credits (HTTP `429`), `mycli` **automatically retries the query with the next available token** in your pool!
+3. **Multiplied Allowance**: 2 accounts = 2,000 free monthly credits; 5 accounts = 5,000 free monthly credits.
+
+---
+
+## ⚙️ CI & Headless Environments
+
+In Docker containers, GitHub Actions, or SSH sessions without a GUI browser, set the `PUTER_AUTH_TOKEN` environment variable:
+
 ```bash
+# Single token
+export PUTER_AUTH_TOKEN="your_puter_auth_token"
+
+# Comma-separated list for automatic rotation in CI
 export PUTER_AUTH_TOKEN="token_1,token_2,token_3"
+
+mycli ask "Explain epoll."
 ```
 
 ---
 
-## Authentication Management Commands
+## 🛠️ CLI Reference
 
-The CLI includes dedicated commands to inspect and manage your stored credentials:
-
-### Check Authentication Status
-```bash
-mycli auth status
-```
-Output:
-```text
---- Puter Authentication Status ---
-Active Source: Cached credentials file
-Token Pool:    2 token(s) configured (Round-Robin enabled)
-Active Token:  [1/2] eyJh...IXy4
-Storage Path:  /home/user/.config/mycli/auth.json
-```
-
-### Explicit Browser Login
-```bash
-mycli auth login
-```
-
-### Logout / Clear Cached Credentials
-```bash
-mycli auth logout
-```
-Output:
-```text
-Removed all cached credentials at: /home/user/.config/mycli/auth.json
-```
-
----
-
-## Error Handling & Exit Codes
-
-The CLI strictly respects Unix process exit codes:
-
-| Exit Code | Cause |
+| Command / Option | Description |
 |---|---|
-| `0` | Success: prompt answered and completed cleanly |
-| `1` | Failure: missing prompt, invalid token (401), rate limits (429), or network error |
-
-Errors are written to standard error (`stderr`), ensuring they do not pollute piped standard output (`stdout`).
+| `mycli ask <prompt>` | Query Puter AI and stream the answer to stdout |
+| `-m, --model <name>` | Specify model (e.g. `gpt-5-nano`, `gpt-4o`, `gpt-5.4`, `claude-3-5-sonnet`) |
+| `--stream` | Stream tokens in real time (default: `true`) |
+| `--no-stream` | Wait and output the complete response at once |
+| `-t, --temperature <num>` | Sampling temperature between `0` and `2` |
+| `mycli auth status` | Display active token, source, and pool size |
+| `mycli auth add <token>` | Add a new token to the multi-account rotation pool |
+| `mycli auth list` | List all tokens in pool and show active rotation index |
+| `mycli auth remove <id>` | Remove a token by pool position |
+| `mycli auth login` | Launch browser to authenticate and store a new token |
+| `mycli auth logout` | Clear all cached tokens from disk |
 
 ---
 
-## Running Tests
+## 🏛️ Architecture
 
-Run the full automated test suite (27 unit and integration tests):
-
-```bash
-npm test
+```mermaid
+graph TD
+    A[User Terminal Command] --> B{PUTER_AUTH_TOKEN set?}
+    B -- Yes --> C[Use Env Tokens Pool]
+    B -- No --> D{Cached tokens in auth.json?}
+    D -- Yes --> E[Load Token Pool & Rotate Index]
+    D -- No --> F[Browser Login via getAuthToken]
+    F --> G[Save Token to ~/.config/mycli/auth.json]
+    C --> H[PuterProvider.chatStream]
+    E --> H
+    G --> H
+    H --> I{Quota 429 or Error?}
+    I -- Yes & More Tokens --> J[Failover to Next Token]
+    J --> H
+    I -- No --> K[Stream Chunks to stdout]
 ```
 
-Test coverage includes:
-- **`tests/auth.test.ts`**: Token persistence, file mode security (`0600`), precedence hierarchy (`PUTER_AUTH_TOKEN` > cached > browser), and headless detection.
-- **`tests/puter.test.ts`**: Puter provider initialization, response content extraction, stream chunk parsing, and async generator fallback.
-- **`tests/cli.test.ts`**: End-to-end CLI integration testing `--version`, `--help`, `auth status`, `ask` with stdin piping, and error exit codes.
+---
+
+## 🧪 Testing
+
+The project includes an automated test suite with 31 unit and integration tests:
+
+```bash
+# Run all tests
+npm test
+
+# Run build typecheck
+npm run build
+```
+
+Coverage spans:
+- Token persistence, restricted permissions (`0600`), and precedence hierarchy.
+- Multi-token pooling, round-robin rotation, and quota failover.
+- Puter provider response extraction and streaming iterator fallback.
+- CLI argument parsing, stdin piping, and exit codes.
+
+---
+
+## 🤝 Contributing
+
+Contributions are warmly welcomed! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md).
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
