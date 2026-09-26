@@ -164,6 +164,10 @@ export function createProgram(): Command {
 
 export async function run(): Promise<void> {
   const program = createProgram();
+  if (process.argv.length <= 2) {
+    program.outputHelp();
+    return;
+  }
   await program.parseAsync(process.argv);
 
   if (process.exitCode && process.exitCode !== 0) {

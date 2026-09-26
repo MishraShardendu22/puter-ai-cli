@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { resolveAuthToken } from '../auth.js';
+import { loadCachedToken } from '../auth.js';
 import { PuterProvider } from '../providers/puter.js';
 import { POPULAR_MODELS, MODEL_ALIASES, type ModelInfo } from '../models.js';
 
@@ -12,11 +12,15 @@ export function registerModelsCommand(program: Command): void {
     .action(async (options: { all?: boolean; search?: string }) => {
       let models: ModelInfo[] = POPULAR_MODELS;
 
-      // Try fetching live catalog if authenticated
-      const resolved = await resolveAuthToken();
-      if (resolved) {
+      // Try fetching live catalog if authenticated without triggering browser login
+      const envToken = process.env.PUTER_AUTH_TOKEN;
+      const token = envToken && envToken.trim() !== ''
+        ? envToken.split(',')[0].trim()
+        : loadCachedToken();
+
+      if (token) {
         try {
-          const provider = new PuterProvider({ authToken: resolved.token });
+          const provider = new PuterProvider({ authToken: token });
           const liveModels = await provider.listModels();
           if (liveModels && liveModels.length > 0) {
             models = liveModels;
