@@ -112,7 +112,32 @@ mycli ask "List 5 SOLID design principles." --no-stream
 mycli ask "Suggest 3 unique names for a vector database." -t 0.9
 ```
 
+### Inspect Models & Alias Resolution
+
+View all supported models, token context limits, and active providers:
+
+```bash
+# Display formatted table of popular and active models
+mycli models
+
+# Filter models by keyword or provider
+mycli models -s claude
+
+# Show entire live model catalog (including extended models)
+mycli models --all
+```
+
+#### Smart Model Aliases
+Legacy model names (like `claude-3-5-sonnet` or `claude-3.5`) are automatically resolved to active Puter models (`claude-sonnet-4.5`):
+- `claude-3-5-sonnet` / `claude-3.5` $\rightarrow$ `claude-sonnet-4.5`
+- `claude-3-5-haiku` / `claude-haiku` $\rightarrow$ `claude-haiku-4.5`
+- `claude-3-opus` / `claude-opus` $\rightarrow$ `claude-opus-4.5`
+- `gpt-4` $\rightarrow$ `gpt-4o`
+- `gpt-5` $\rightarrow$ `gpt-5-nano`
+- `deepseek` $\rightarrow$ `deepseek-chat`
+
 ---
+
 
 ## Token Pool & Round-Robin Rotation
 

@@ -151,4 +151,20 @@ describe('CLI Integration Tests', () => {
     assert.strictEqual(res.code, 1);
     assert.ok(res.stderr.includes('Error: Authentication failed with Puter (401 Unauthorized)'));
   });
+
+  test('mycli models displays supported models table', async () => {
+    const res = await runCli(['models']);
+    assert.strictEqual(res.code, 0);
+    assert.ok(res.stdout.includes('Puter AI Supported Models'));
+    assert.ok(res.stdout.includes('gpt-5-nano'));
+    assert.ok(res.stdout.includes('claude-sonnet-4.5'));
+    assert.ok(res.stdout.includes('Common Model Aliases'));
+  });
+
+  test('mycli models --search filters models list', async () => {
+    const res = await runCli(['models', '--search', 'claude']);
+    assert.strictEqual(res.code, 0);
+    assert.ok(res.stdout.includes('claude'));
+  });
 });
+

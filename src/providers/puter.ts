@@ -1,5 +1,6 @@
 import { init } from '@heyputer/puter.js/src/init.cjs';
 import type { Puter } from '@heyputer/puter.js';
+import { normalizeModel, fetchPuterModels, type ModelInfo } from '../models.js';
 
 export interface PuterProviderOptions {
   authToken: string;
@@ -163,6 +164,16 @@ function handlePuterApiError(error: unknown): never {
     throw new PuterError('Failed to connect to Puter API. Please check your network connection.', undefined, error);
   }
 
+  if (message.includes('Model not found')) {
+    throw new PuterError(
+      `${message}\n` +
+      `Tip: Run 'mycli models' to see active models on Puter AI.\n` +
+      `Popular alternatives: claude-sonnet-4.5, claude-haiku-4.5, gpt-4o, gpt-5-nano, deepseek-chat.`,
+      404,
+      error
+    );
+  }
+
   throw new PuterError(`Puter AI Error: ${message}`, status, error);
 }
 
@@ -190,8 +201,9 @@ export class PuterProvider {
       stream: shouldStream,
     };
 
-    if (options.model) {
-      requestOptions.model = options.model;
+    const resolvedModel = normalizeModel(options.model);
+    if (resolvedModel) {
+      requestOptions.model = resolvedModel;
     }
     if (typeof options.temperature === 'number') {
       requestOptions.temperature = options.temperature;
@@ -240,5 +252,12 @@ export class PuterProvider {
       result += chunk;
     }
     return result;
+  }
+
+  /**
+   * List available models from Puter AI.
+   */
+  async listModels(): Promise<ModelInfo[]> {
+    return fetchPuterModels(this.puter);
   }
 }

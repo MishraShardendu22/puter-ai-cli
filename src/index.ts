@@ -16,6 +16,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { registerAskCommand } from './commands/ask.js';
+import { registerModelsCommand } from './commands/models.js';
 import {
   loadCachedTokens,
   addToken,
@@ -52,6 +53,9 @@ export function createProgram(): Command {
 
   // Register primary 'ask' command
   registerAskCommand(program);
+
+  // Register 'models' command
+  registerModelsCommand(program);
 
   // Authentication utility commands for managing Puter credentials
   const authCmd = program

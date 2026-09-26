@@ -155,4 +155,43 @@ describe('Puter Provider Module', () => {
     assert.ok(passedOptions);
     assert.deepStrictEqual(passedOptions.tools, [{ type: 'web_search' }]);
   });
+
+  test('chatStream normalizes legacy and alias models automatically', async () => {
+    const provider = new PuterProvider({ authToken: 'dummy_token' });
+    let passedOptions: any = null;
+
+    (provider as any).puter = {
+      ai: {
+        chat: async (_prompt: string, opts: any) => {
+          passedOptions = opts;
+          return {
+            message: {
+              content: 'Resolved correctly.',
+            },
+          };
+        },
+      },
+    };
+
+    // Test claude-3-5-sonnet -> claude-sonnet-4.5
+    await provider.chat('Hello', { model: 'claude-3-5-sonnet' });
+    assert.strictEqual(passedOptions.model, 'claude-sonnet-4.5');
+
+    // Test claude-3.5 -> claude-sonnet-4.5
+    await provider.chat('Hello', { model: 'claude-3.5' });
+    assert.strictEqual(passedOptions.model, 'claude-sonnet-4.5');
+
+    // Test claude-haiku -> claude-haiku-4.5
+    await provider.chat('Hello', { model: 'claude-haiku' });
+    assert.strictEqual(passedOptions.model, 'claude-haiku-4.5');
+
+    // Test gpt-4 -> gpt-4o
+    await provider.chat('Hello', { model: 'gpt-4' });
+    assert.strictEqual(passedOptions.model, 'gpt-4o');
+
+    // Test gpt-5 -> gpt-5-nano
+    await provider.chat('Hello', { model: 'gpt-5' });
+    assert.strictEqual(passedOptions.model, 'gpt-5-nano');
+  });
 });
+
